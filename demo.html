@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Flip Timer</title>
+    <link rel="stylesheet" href="countdown.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #2c2c2c;
+            color: #333;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            height: 100vh;
+        }
+
+        .countdown-area {
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .controls-panel {
+            background: #f5f5f5;
+            padding: 20px;
+            overflow-y: auto;
+            border-left: 1px solid #ddd;
+        }
+
+        .control-group {
+            margin-bottom: 18px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .control-group input[type="text"],
+        .control-group input[type="number"] {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+            background: white;
+        }
+
+        .control-group input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+
+        .radio-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .radio-item input[type="radio"] {
+            margin: 0;
+        }
+
+        .radio-item label {
+            margin: 0;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin: 0;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .number-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .number-input input {
+            width: 80px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-stop {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-stop:hover {
+            background: #545b62;
+        }
+
+        .btn-start {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-start:hover {
+            background: #1e7e34;
+        }
+
+        .btn-destroy {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-destroy:hover {
+            background: #c82333;
+        }
+
+        .btn-create {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-create:hover {
+            background: #0056b3;
+        }
+
+        .yellow-arrow {
+            position: absolute;
+            right: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid #ffc107;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+        }
+
+        .control-group.highlight {
+            position: relative;
+        }
+
+        /* Countdown styling override */
+        .countdown-flip-timer {
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr auto;
+            }
+            
+            .controls-panel {
+                height: 300px;
+                border-left: none;
+                border-top: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Zone d'affichage du countdown -->
+        <div class="countdown-area">
+            <div id="countdown-display"></div>
+        </div>
+
+        <!-- Panneau de contrôles -->
+        <div class="controls-panel">
+            <!-- Time Text -->
+            <div class="control-group">
+                <label for="timeText">Time Text</label>
+                <input type="text" id="timeText" value="2026/9/28 13:37:30">
+            </div>
+
+            <!-- Time Zone -->
+            <div class="control-group">
+                <label for="timeZone">Time Zone</label>
+                <input type="number" id="timeZone" value="2" min="-12" max="12">
+            </div>
+
+            <!-- Style -->
+            <div class="control-group">
+                <label>Style</label>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" id="styleFlip" name="style" value="Flip" checked>
+                        <label for="styleFlip">Flip</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="styleSlide" name="style" value="Slide">
+                        <label for="styleSlide">Slide</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="styleMetal" name="style" value="Metal">
+                        <label for="styleMetal">Metal</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="styleCrystal" name="style" value="Crystal">
+                        <label for="styleCrystal">Crystal</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Color -->
+            <div class="control-group">
+                <label>Color</label>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" id="colorBlack" name="color" value="black" checked>
+                        <label for="colorBlack">Black</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="colorWhite" name="color" value="white">
+                        <label for="colorWhite">White</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Width -->
+            <div class="control-group highlight">
+                <label>Width</label>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" id="widthAuto" name="width" value="0" checked>
+                        <label for="widthAuto">Auto</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="widthFixed" name="width" value="80">
+                        <label for="widthFixed">Fixed</label>
+                    </div>
+                </div>
+                <div class="yellow-arrow"></div>
+            </div>
+
+            <!-- Text Group Space -->
+            <div class="control-group">
+                <label for="textGroupSpace">Text Group Space</label>
+                <input type="number" id="textGroupSpace" value="15" min="0" max="50">
+            </div>
+
+            <!-- Text Space -->
+            <div class="control-group">
+                <label for="textSpace">Text Space</label>
+                <input type="number" id="textSpace" value="0" min="0" max="20">
+            </div>
+
+            <!-- Reflection -->
+            <div class="control-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="reflection" checked>
+                    <label for="reflection">Reflection</label>
+                </div>
+            </div>
+
+            <!-- Reflection Opacity -->
+            <div class="control-group">
+                <label for="reflectionOpacity">Reflection Opacity</label>
+                <input type="number" id="reflectionOpacity" value="0" min="0" max="100">
+            </div>
+
+            <!-- Reflection Blur -->
+            <div class="control-group">
+                <label for="reflectionBlur">Reflection Blur</label>
+                <input type="number" id="reflectionBlur" value="0" min="0" max="10">
+            </div>
+
+            <!-- Day Text Number -->
+            <div class="control-group">
+                <label for="dayTextNumber">Day Text number</label>
+                <input type="number" id="dayTextNumber" value="2" min="1" max="4">
+            </div>
+
+            <!-- Digits -->
+            <div class="control-group">
+                <label>Digits</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="displayDay" checked>
+                        <label for="displayDay">Display Day</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="displayHour" checked>
+                        <label for="displayHour">Display Hour</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="displayMinute" checked>
+                        <label for="displayMinute">Display Minute</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="displaySecond" checked>
+                        <label for="displaySecond">Display Second</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Label -->
+            <div class="control-group highlight">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="displayLabel" checked>
+                    <label for="displayLabel">Display Label</label>
+                </div>
+                <div class="yellow-arrow"></div>
+            </div>
+
+            <!-- On Finish Event -->
+            <div class="control-group">
+                <label for="onFinishEvent">On Finish Event</label>
+                <input type="text" id="onFinishEvent" placeholder="Event handler">
+            </div>
+
+            <!-- Boutons de contrôle -->
+            <div class="buttons">
+                <button class="btn btn-stop" onclick="stopCountdown()">Stop</button>
+                <button class="btn btn-start" onclick="startCountdown()">Start</button>
+                <button class="btn btn-destroy" onclick="destroyCountdown()">Destroy</button>
+                <button class="btn btn-create" onclick="createCountdown()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="countdown.js"></script>
+    <script>
+        let countdownTimer = null;
+
+        // Fonction pour obtenir la configuration actuelle
+        function getCurrentConfig() {
+            const style = document.querySelector('input[name="style"]:checked').value;
+            const color = document.querySelector('input[name="color"]:checked').value;
+            const width = parseInt(document.querySelector('input[name="width"]:checked').value);
+            
+            return {
+                timeText: document.getElementById('timeText').value,
+                timeZone: parseInt(document.getElementById('timeZone').value) || 0,
+                style: style,
+                color: color,
+                width: width,
+                textGroupSpace: parseInt(document.getElementById('textGroupSpace').value) || 15,
+                textSpace: parseInt(document.getElementById('textSpace').value) || 0,
+                reflection: document.getElementById('reflection').checked,
+                reflectionOpacity: parseInt(document.getElementById('reflectionOpacity').value) || 0,
+                reflectionBlur: parseInt(document.getElementById('reflectionBlur').value) || 0,
+                dayTextNumber: parseInt(document.getElementById('dayTextNumber').value) || 2,
+                displayDay: document.getElementById('displayDay').checked,
+                displayHour: document.getElementById('displayHour').checked,
+                displayMinute: document.getElementById('displayMinute').checked,
+                displaySecond: document.getElementById('displaySecond').checked,
+                displayLabel: document.getElementById('displayLabel').checked,
+                onFinish: function() {
+                    console.log('Countdown terminé !');
+                }
+            };
+        }
+
+        // Méthodes de contrôle
+        function createCountdown() {
+            if (countdownTimer) {
+                countdownTimer.destroy();
+            }
+            
+            const config = getCurrentConfig();
+            countdownTimer = new CountdownFlipTimer('#countdown-display', config);
+        }
+
+        function startCountdown() {
+            if (countdownTimer) {
+                countdownTimer.start();
+            } else {
+                createCountdown();
+                countdownTimer.start();
+            }
+        }
+
+        function stopCountdown() {
+            if (countdownTimer) {
+                countdownTimer.stop();
+            }
+        }
+
+        function destroyCountdown() {
+            if (countdownTimer) {
+                countdownTimer.destroy();
+                countdownTimer = null;
+            }
+        }
+
+        // Mise à jour automatique lors des changements
+        function setupAutoUpdate() {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    if (countdownTimer) {
+                        const config = getCurrentConfig();
+                        countdownTimer.updateOptions(config);
+                    }
+                });
+            });
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Créer le countdown initial
+            createCountdown();
+            startCountdown();
+            
+            // Configurer la mise à jour automatique
+            setupAutoUpdate();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,359 @@
+/**
+ * Countdown Flip Timer CSS
+ * Complete styling for flip clock animation with multiple themes
+ */
+
+/* Base Styles */
+.countdown-flip-timer {
+    font-family: 'Arial', sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.countdown-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.time-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.time-unit .digit-container {
+    display: inline-block;
+    position: relative;
+    margin: 0 2px;
+}
+
+/* Digit Card Base */
+.digit-card {
+    position: relative;
+    width: 60px;
+    height: 80px;
+    perspective: 200px;
+    margin-bottom: 10px;
+}
+
+.digit-top,
+.digit-bottom,
+.digit-flip {
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.digit-top,
+.digit-bottom {
+    height: 50%;
+}
+
+.digit-top {
+    top: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.digit-bottom {
+    bottom: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.digit-flip {
+    top: 0;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease-in-out;
+    pointer-events: none;
+}
+
+.digit-flip-top,
+.digit-flip-bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    border-radius: 8px;
+    backface-visibility: hidden;
+    overflow: hidden;
+}
+
+.digit-flip-top {
+    top: 0;
+    transform-origin: bottom;
+    transform: rotateX(0deg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.digit-flip-bottom {
+    bottom: 0;
+    transform-origin: top;
+    transform: rotateX(180deg);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Flip Animation */
+.digit-card.flipping .digit-flip {
+    animation: flipAnimation 0.6s ease-in-out;
+}
+
+@keyframes flipAnimation {
+    0% {
+        transform: rotateX(0deg);
+    }
+    50% {
+        transform: rotateX(-90deg);
+    }
+    100% {
+        transform: rotateX(0deg);
+    }
+}
+
+/* Labels */
+.time-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+/* Reflection Effect */
+.digit-reflection {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 40px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    transform: scaleY(-1);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Black Theme */
+.countdown-flip-timer.black .digit-top,
+.countdown-flip-timer.black .digit-bottom,
+.countdown-flip-timer.black .digit-flip-top,
+.countdown-flip-timer.black .digit-flip-bottom {
+    background: linear-gradient(to bottom, #2c2c2c 0%, #1a1a1a 100%);
+    color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.countdown-flip-timer.black .time-label {
+    color: #ffffff;
+}
+
+.countdown-flip-timer.black .digit-reflection {
+    color: #ffffff;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+}
+
+/* White Theme */
+.countdown-flip-timer.white .digit-top,
+.countdown-flip-timer.white .digit-bottom,
+.countdown-flip-timer.white .digit-flip-top,
+.countdown-flip-timer.white .digit-flip-bottom {
+    background: linear-gradient(to bottom, #ffffff 0%, #f0f0f0 100%);
+    color: #333333;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+}
+
+.countdown-flip-timer.white .time-label {
+    color: #333333;
+}
+
+.countdown-flip-timer.white .digit-reflection {
+    color: #333333;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
+}
+
+/* Style Variations */
+
+/* Flip Style (Default) */
+.countdown-flip-timer.flip .digit-card.flipping .digit-flip-top {
+    animation: flipTop 0.6s ease-in-out;
+}
+
+.countdown-flip-timer.flip .digit-card.flipping .digit-flip-bottom {
+    animation: flipBottom 0.6s ease-in-out;
+}
+
+@keyframes flipTop {
+    0% { transform: rotateX(0deg); }
+    50% { transform: rotateX(-90deg); }
+    100% { transform: rotateX(-180deg); }
+}
+
+@keyframes flipBottom {
+    0% { transform: rotateX(180deg); }
+    50% { transform: rotateX(90deg); }
+    100% { transform: rotateX(0deg); }
+}
+
+/* Slide Style */
+.countdown-flip-timer.slide .digit-card.flipping .digit-flip {
+    animation: slideAnimation 0.6s ease-in-out;
+}
+
+@keyframes slideAnimation {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-100%); }
+    100% { transform: translateY(0); }
+}
+
+/* Metal Style */
+.countdown-flip-timer.metal .digit-top,
+.countdown-flip-timer.metal .digit-bottom,
+.countdown-flip-timer.metal .digit-flip-top,
+.countdown-flip-timer.metal .digit-flip-bottom {
+    background: linear-gradient(135deg, #c0c0c0 0%, #808080 50%, #606060 100%);
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+        0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.countdown-flip-timer.metal .time-label {
+    color: #606060;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Crystal Style */
+.countdown-flip-timer.crystal .digit-top,
+.countdown-flip-timer.crystal .digit-bottom,
+.countdown-flip-timer.crystal .digit-flip-top,
+.countdown-flip-timer.crystal .digit-flip-bottom {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0.5) 100%);
+    color: #333333;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.countdown-flip-timer.crystal .time-label {
+    color: #333333;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .countdown-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .time-unit {
+        margin: 0;
+    }
+    
+    .digit-card {
+        width: 50px;
+        height: 70px;
+    }
+    
+    .digit-top,
+    .digit-bottom,
+    .digit-flip-top,
+    .digit-flip-bottom {
+        font-size: 2rem;
+    }
+    
+    .digit-reflection {
+        font-size: 2rem;
+        height: 35px;
+    }
+    
+    .time-label {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .countdown-container {
+        gap: 15px;
+    }
+    
+    .digit-card {
+        width: 40px;
+        height: 60px;
+    }
+    
+    .digit-top,
+    .digit-bottom,
+    .digit-flip-top,
+    .digit-flip-bottom {
+        font-size: 1.5rem;
+    }
+    
+    .digit-reflection {
+        font-size: 1.5rem;
+        height: 30px;
+    }
+    
+    .time-label {
+        font-size: 0.6rem;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .digit-flip,
+    .digit-card.flipping .digit-flip,
+    .digit-card.flipping .digit-flip-top,
+    .digit-card.flipping .digit-flip-bottom {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .countdown-flip-timer.black .digit-top,
+    .countdown-flip-timer.black .digit-bottom,
+    .countdown-flip-timer.black .digit-flip-top,
+    .countdown-flip-timer.black .digit-flip-bottom {
+        background: #000000;
+        color: #ffffff;
+        border: 2px solid #ffffff;
+    }
+    
+    .countdown-flip-timer.white .digit-top,
+    .countdown-flip-timer.white .digit-bottom,
+    .countdown-flip-timer.white .digit-flip-top,
+    .countdown-flip-timer.white .digit-flip-bottom {
+        background: #ffffff;
+        color: #000000;
+        border: 2px solid #000000;
+    }
+}
